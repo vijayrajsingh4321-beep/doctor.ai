@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Poppins;
+    background: #f4f6f9;
+    margin: 0;
+}
+
+/* Header */
+.header {
+    background: #0d47a1;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* Cards */
+.cards {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Chart */
+.chart-container {
+    width: 90%;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">📊 Healthcare Dashboard</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Users</h3>
+        <h2 id="users">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Chats Today</h3>
+        <h2 id="chats">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Predictions</h3>
+        <h2 id="predictions">0</h2>
+    </div>
+</div>
+
+<div class="chart-container">
+    <canvas id="chart"></canvas>
+</div>
+
+<script>
+// 🎯 Animated Counter
+function animateValue(id, end) {
+    let start = 0;
+    let duration = 1000;
+    let step = Math.ceil(end / (duration / 10));
+
+    let interval = setInterval(() => {
+        start += step;
+        if (start >= end) {
+            start = end;
+            clearInterval(interval);
+        }
+        document.getElementById(id).innerText = start;
+    }, 10);
+}
+
+// 🔄 Fetch backend data
+fetch('/dashboard-data')
+.then(res => res.json())
+.then(data => {
+    animateValue("users", data.users);
+    animateValue("chats", data.chats);
+    animateValue("predictions", data.predictions);
+
+    // 📊 Chart
+    new Chart(document.getElementById("chart"), {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: "Daily Chats",
+                data: data.values
+            }]
+        }
+    });
+});
+</script>
+
+</body>
+</html>

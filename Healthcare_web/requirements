@@ -1,0 +1,7 @@
+Flask
+pandas 
+numpy
+scikit-learn
+gunicorn
+groq
+python-dotenv
